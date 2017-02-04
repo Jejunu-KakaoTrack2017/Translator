@@ -1,3 +1,3 @@
-###for hook test
+#Naver 기계번역 api 사용
 
-1, 2
+ - 연결 테스트
