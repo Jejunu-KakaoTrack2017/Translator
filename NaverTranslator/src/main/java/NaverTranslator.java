@@ -1,4 +1,6 @@
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -8,15 +10,19 @@ import java.net.URLEncoder;
  */
 public class NaverTranslator {
 
+    private String apiURL = "https://openapi.naver.com/v1/language/translate";
     private String clientId = "uJxEKdJWT41i3csWVtKr";
     private String clientSecret = "j1tn5Iv2Vq";
 
-    public int connectNaverTranslate(String input) {
+    private HttpURLConnection con;
+
+    public NaverTranslator() {
+        con = getNaverApiConnection();
+    }
+
+    private HttpURLConnection getNaverApiConnection() {
 
         try {
-            String text = URLEncoder.encode(input, "UTF-8");
-            String apiURL = "https://openapi.naver.com/v1/language/translate";
-
             URL url = new URL(apiURL);
 
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -24,6 +30,18 @@ public class NaverTranslator {
             con.setRequestProperty("X-Naver-Client-Id", clientId);
             con.setRequestProperty("X-Naver-Client-Secret", clientSecret);
 
+            return con;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
+    }
+
+    public String getNaverTranslate(String input) {
+
+        try {
+            String text = URLEncoder.encode(input, "UTF-8");
             String postParams = "source=en&target=ko&text=" + text;
             con.setDoOutput(true);
 
@@ -34,12 +52,28 @@ public class NaverTranslator {
 
             int responseCode = con.getResponseCode();
 
-            return responseCode;
+            BufferedReader bufferedReader;
+
+            if (responseCode == 200) {
+                bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            } else {
+                bufferedReader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+            }
+
+            StringBuffer output = new StringBuffer();
+            String inputLine;
+
+            while ((inputLine = bufferedReader.readLine()) != null) {
+                output.append(inputLine);
+            }
+            bufferedReader.close();
+
+            System.out.println(output.toString());
+
+            return output.toString();
         } catch (Exception e) {
             e.printStackTrace();
-
-            return 0;
+            return null;
         }
-
     }
 }
