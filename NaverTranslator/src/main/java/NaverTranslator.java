@@ -68,8 +68,6 @@ public class NaverTranslator {
             }
             bufferedReader.close();
 
-            System.out.println(output.toString());
-
             return output.toString();
         } catch (Exception e) {
             e.printStackTrace();

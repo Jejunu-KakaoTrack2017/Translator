@@ -1,3 +1,4 @@
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -8,6 +9,9 @@ public class Test {
     @org.junit.Test
     public void translateTest() {
         NaverTranslator translator = new NaverTranslator();
-        assertNotNull(translator.getNaverTranslate("test"));
+        NaverJSONParser naverJSONParser = new NaverJSONParser();
+
+        String getNaverJson = translator.getNaverTranslate("test");
+        assertEquals("시험", naverJSONParser.parseNaverJSON(getNaverJson));
     }
 }
